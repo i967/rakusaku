@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "paypay.api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'paypay.api.key'"
+  },
+  {
+    "name": "paypay.api.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'paypay.api.secret'"
+  },
+  {
+    "name": "paypay.api.env",
+    "type": "java.lang.String",
+    "description": "A description for 'paypay.api.env'"
+  },
+  {
+    "name": "paypay.merchant.key",
+    "type": "java.lang.String",
+    "description": "A description for 'paypay.merchant.key'"
+  },
+  {
+    "name": "paypay.production.mode",
+    "type": "java.lang.String",
+    "description": "A description for 'paypay.production.mode'"
+  }
+]}

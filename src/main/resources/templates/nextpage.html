@@ -1,0 +1,125 @@
+<script src="/Cookie.js"></script>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>選択商品確認</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+
+        h2, p {
+            text-align: center;
+            color: #007bff;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        td {
+            font-size: 16px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .button-container button {
+            padding: 12px 28px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container button:first-child {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .button-container button:first-child:hover {
+            background-color: #c82333;
+        }
+
+        .button-container button:last-child {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .button-container button:last-child:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 th:text="'選択された店舗：' + ${selectedStore}">選択された店舗：○○店</h2>
+    <p>以下の商品が確認できます。チェックして「カートに追加」を押してください。</p>
+
+    <!-- ✅ 商品選択フォームに onsubmit 属性追加 -->
+    <form method="post" action="/cart" onsubmit="return validateSelection()">
+        <table>
+            <thead>
+                <tr>
+                    <th>選択</th>
+                    <th>商品名</th>
+                    <th>価格</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="goods : ${goodsList}">
+                    <td>
+                        <input type="checkbox" name="selectedGoodsIds"
+                               th:value="${goods.id}">
+                    </td>
+                    <td th:text="${goods.goodsname}">商品名</td>
+                    <td th:text="${goods.goodsprice} + ' 円'">価格</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="button-container">
+            <button type="button" onclick="window.location.href='/select'">戻る</button>
+            <button type="submit">カートに追加</button>
+        </div>
+    </form>
+
+    <!-- ✅ JavaScriptバリデーション関数 -->
+    <script>
+        function validateSelection() {
+            const selected = document.querySelectorAll('input[name="selectedGoodsIds"]:checked');
+            if (selected.length === 0) {
+                alert('商品を1つ以上選択してください。');
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+</body>
+</html>

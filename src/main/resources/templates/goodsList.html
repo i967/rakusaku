@@ -1,0 +1,70 @@
+<script src="/Cookie.js"></script>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>商品一覧</title>
+    <style>
+        body {	
+            font-family: sans-serif;
+            padding: 40px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px 16px;
+            border: 1px solid #aaa;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .description {
+            width: 40%;
+        }
+        .price {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>商品一覧</h1>
+
+    <div th:if="${#lists.isEmpty(goodsList)}">
+        <p>現在販売中の商品はありません。</p>
+    </div>
+    <table th:if="${!#lists.isEmpty(goodsList)}">
+        <thead>
+            <tr>
+                <th>商品名</th>
+                <th class="description">説明</th>
+                <th>価格</th>
+                <th>在庫</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${goodsList}">
+                <td th:text="${product.name}">商品A</td>
+                <td th:text="${product.description}">商品の説明です。</td>
+                <td class="price" th:text="|${product.price}円|">1,000円</td>
+                <td th:text="${product.stock > 0 ? '在庫あり' : '売り切れ'}">在庫あり</td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>購入履歴</h2>
+    <div th:if="${#lists.isEmpty(historyList)}">
+        <p>購入履歴はまだありません。</p>
+    </div>
+    <ul th:if="${!#lists.isEmpty(historyList)}">
+        <li th:each="item : ${historyList}" th:text="|${item.goodsName} - ${item.goodsPrice}円|"></li>
+    </ul>
+
+</body>
+</html>

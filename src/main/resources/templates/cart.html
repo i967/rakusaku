@@ -1,0 +1,98 @@
+<script src="/Cookie.js"></script>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カートの中身</title>
+    <style>
+                body {
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        td {
+            font-size: 16px;
+        }
+
+        p {
+            text-align: center;
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .back-button {
+            background-color: #dc3545;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+<h2>カート内容</h2>
+
+<form th:action="@{/purchase/confirm}" method="post">
+    <div th:each="item : ${cartItems}">
+        <p th:text="${item.goodsname} + ' - ' + ${item.goodsprice} + '円'"></p>
+        <input type="hidden" name="selectedGoodsIds" th:value="${item.id}" />
+    </div>
+
+    <!-- 支払い方法は仮にLINE固定 -->
+    <input type="hidden" name="paymentMethod" value="LINE" />
+
+    <button type="submit">支払いに進む</button>
+</form>
+
+</body></html>

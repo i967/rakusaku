@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>在庫一覧</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2em;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .message-area {
+            width: 80%;
+            margin: 1em auto;
+            padding: 10px;
+            text-align: center;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        /* .controls スタイルは新規登録ボタン専用だったので、関連するなら削除しても良いですが、
+           他の用途で使う可能性も考慮し、ここでは残しておきます。
+           もし不要であれば、このコメントアウト部分と下の table の直前の div.controls を削除してください。
+        .controls {
+            width: 80%;
+            margin: 1em auto;
+            text-align: right;
+        }
+
+        .controls a {
+            text-decoration: none;
+            padding: 8px 15px;
+            background-color: #5cb85c;
+            color: white;
+            border-radius: 4px;
+        }
+        .controls a:hover {
+            background-color: #4cae4c;
+        }
+        */
+
+        table {
+            width: 80%;
+            margin: 1em auto; /* 新規登録リンクがなくなったので、テーブルの上のマージンを調整 */
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td form {
+            display: inline-block;
+            margin: 0 5px;
+        }
+        td input[type="number"] {
+            width: 70px;
+            padding: 5px;
+            text-align: right;
+            margin-right: 5px;
+        }
+        td button {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        td .update-button {
+            background-color: #337ab7;
+            color: white;
+        }
+        td .update-button:hover {
+            background-color: #286090;
+        }
+        td .delete-button {
+            background-color: #d9534f;
+            color: white;
+        }
+        td .delete-button:hover {
+            background-color: #c9302c;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>在庫一覧</h1>
+
+    <div th:if="${successMessage}" class="message-area alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="message-area alert-danger" th:text="${errorMessage}"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>商品名</th>
+                <th>在庫数</th>
+                <th>更新日</th>
+                <th>商品削除アクション</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${#lists.isEmpty(products)}">
+                <td colspan="4" style="text-align: center;">在庫情報はありません。</td>
+            </tr>
+            <tr th:each="product : ${products}" th:unless="${#lists.isEmpty(products)}">
+                <td th:text="${product.name}">商品名</td>
+                <td>
+                    <form th:action="@{/admin/products/updateStock/{id}(id=${product.id})}" method="post">
+                        <input type="number" name="stock" th:value="${product.stock}" min="0" required />
+                        <button type="submit" class="update-button">個数編集</button>
+                    </form>
+                </td>
+                <td th:text="${product.updateDate != null ? #temporals.format(product.updateDate, 'yyyy-MM-dd HH:mm') : '-'}">更新日</td>
+                <td>
+                    <form th:action="@{/admin/products/delete/{id}(id=${product.id})}"
+                          method="post"
+                          th:onsubmit="'return confirm(\'本当にこの商品「' + #strings.escapeJavaScript(${product.name}) + '」を削除しますか？\');'">
+                        <button type="submit" class="delete-button">削除</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="back-link">
+        <a href="/kanrihome">管理者メニューに戻る</a>
+    </div>
+</body>
+</html>

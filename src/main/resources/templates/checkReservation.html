@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>予約番号確認</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px; /* 少し幅を広げます */
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    /* 表示切り替えボタンは、新しい仕様では不要になるため一旦削除します */
+    /*
+    .hidden {
+      display: none;
+    }
+    */
+    td form {
+        margin: 0;
+    }
+    td button {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>予約一覧</h2>
+
+  <table>
+    <thead>
+    <tr>
+      <th>注文番号</th>
+      <th>商品名</th>
+      <th>価格</th>
+      <th>注文日時</th>
+      <th>状態</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}" th:id="'order-' + ${order.id}">
+      <td th:text="${order.orderNumber}">ORD-12345</td>
+      <td th:text="${order.itemName}">商品名</td>
+      <td th:text="${order.price} + ' 円'">価格</td>
+      <td th:text="${#temporals.format(order.createdAt, 'yyyy/MM/dd HH:mm')}">日時</td>
+      <td class="status" th:text="${order.status.name()}">状態</td>
+      <td>
+        <form th:if="${order.status.name() != 'COMPLETED'}" 
+              th:action="@{/shop-admin/reservations/{reservationNumber}/notify-completed(reservationNumber=${order.orderNumber})}" 
+              method="post" onsubmit="return confirm('この注文を「完了」にして顧客に通知しますか？');">
+            <button type="submit">完了にする</button>
+        </form>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(orders)}">
+        <td colspan="6" style="text-align: center;">現在、対象の予約はありません。</td>
+    </tr>
+    </tbody>
+  </table>
+  
+  <p style="text-align: center; margin-top: 20px;">
+      <a th:href="@{/kanrihome}">管理者ホームに戻る</a>
+  </p>
+</div>
+
+</body>
+</html>

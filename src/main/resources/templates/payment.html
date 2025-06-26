@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>お支払い完了</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; text-align: center; }
+        h2 { margin-bottom: 30px; }
+        .info-box { border: 1px solid #ccc; padding: 25px; margin: 20px auto; max-width: 600px; text-align: left; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .order-item-container { text-align: center; margin-bottom: 25px; padding-bottom: 20px; }
+        .order-number-list { list-style-type: none; padding: 0; }
+        .order-number { font-size: 1.2rem; font-weight: bold; color: #dc3545; margin: 5px 0; }
+        .home-button { padding: 10px 25px; font-size: 1rem; border: none; border-radius: 6px; background-color: #4682B4; color: white; cursor: pointer; }
+        .home-button:hover { background-color: #315f85; }
+        .qr-code-img { margin-top: 15px; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <h2 th:text="${message}">お支払い完了</h2>
+
+    <div class="info-box">
+        <h3 style="text-align: center;">ご注文ありがとうございます</h3>
+        <p style="text-align: center; margin-bottom: 30px;">
+            商品を準備できましたら、LINEでお知らせいたします。<br>
+            <strong>スマホで下のQRコードを読み取り、連携を完了してください。</strong>
+        </p>
+        
+        <div class="order-item-container">
+            <p>ご注文番号:</p>
+            
+            <ul class="order-number-list">
+                <li th:each="num : ${orderNumbers}" class="order-number">
+                    <span th:text="${num}">ORD-XXXXXX</span>
+                </li>
+            </ul>
+            
+            <a th:href="@{'https://line.me/R/oaMessage/@254gcwky/?' + ${#strings.listJoin(orderNumbers, '\n')}}" target="_blank">
+                <img th:src="${qrCode}" alt="LINE連携QRコード" class="qr-code-img" style="cursor: pointer;">
+            </a>
+        </div>
+
+    </div>
+    <br>
+
+    <button type="button" onclick="location.href='/userhome'" class="home-button">
+        ホームに戻る
+    </button>
+
+</body>
+</html>

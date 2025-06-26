@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>PayPay支払い</title>
+</head>
+<body>
+    <h1>PayPay支払い</h1>
+    <p>以下のQRコードをPayPayアプリで読み取り、金額を入力して送金してください。</p>
+    
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://paypay.ne.jp/qr/07090306721" alt="PayPay QRコード" />
+    <br/>
+    <a href="https://paypay.ne.jp/qr/07090306721" target="_blank">PayPayで支払う</a>
+</body>
+</html>

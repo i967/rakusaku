@@ -1,0 +1,48 @@
+<script src="/Cookie.js"></script>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>店舗選択</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: sans-serif;
+            padding: 50px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+        .store-option {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <h1>店舗を選んでください</h1>
+    <form th:action="@{/nextpage}" method="post">
+        <div class="store-option" th:each="store : ${stores}">
+    <input type="radio" name="storename" th:value="${store}" th:id="${store}" required />
+    <label th:for="${store}" th:text="${store}">店舗名</label>
+</div>
+
+		<button type="button" onclick="window.location.href='/userhome'">戻る</button>
+<button type="submit">次へ</button>
+    </form>
+</body>
+</html>

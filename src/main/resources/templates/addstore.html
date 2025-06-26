@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新規店舗（管理者ユーザー）登録</title> <style>
+        body { font-family: "Arial", sans-serif; background-color: #f2f5f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px 0; color: #333; } /* min-height と padding を追加 */
+        .container { background-color: #ffffff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); width: 100%; max-width: 450px; text-align: center; }
+        h2 { margin-bottom: 25px; color: #28a745; font-size: 1.8rem; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button[type="submit"] { width: 100%; padding: 12px; margin-top: 15px; background-color: #28a745; border: none; border-radius: 6px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.2s ease; }
+        button[type="submit"]:hover { background-color: #218838; }
+        .message { margin-bottom: 15px; padding: 10px; border-radius: 5px; font-size: 14px; text-align: left; }
+        .error-message { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .success-message { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .back-link { display: block; text-align: center; margin-top: 20px; font-size: 14px; }
+        .back-link a { color: #007acc; text-decoration: none; }
+        .back-link a:hover { text-decoration: underline; }
+        .password-input-container { position: relative; }
+        .password-input-container input#password { padding-right: 45px; }
+        .password-toggle-button { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: none; border: none; padding: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #777; }
+        .password-toggle-button:hover svg { fill: #333; }
+        .password-toggle-button svg { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>新規店舗（管理者ユーザー）登録</h2>
+
+        <div th:if="${successMessage}" class="message success-message" th:text="${successMessage}"></div>
+        <div th:if="${error}" class="message error-message" th:text="${error}"></div>
+
+        <form th:action="@{/admin/kanriusers/add}" method="post" th:object="${kanriUser}">
+            <div class="form-group">
+                <label for="id">ID（クラスID/店舗ID）</label>
+                <input type="text" id="id" name="id" placeholder="例: 4A, 3B など"
+                       th:field="*{id}" required />
+                </div>
+            <div class="form-group">
+                <label for="name">店舗名</label> <input type="text" id="name" name="name" placeholder="店舗名を入力"
+                       th:field="*{name}" required />
+                </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <div class="password-input-container">
+                    <input type="password" id="password" name="password" placeholder="パスワードを入力" th:field="*{password}" required />
+                    <button type="button" id="togglePasswordButton" class="password-toggle-button" aria-label="パスワードの表示/非表示を切り替え">
+                        <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        <svg class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display:none;">
+                            <path d="M12 6.5c2.76 0 5 2.24 5 5 0 .66-.13 1.28-.36 1.85l2.92 2.92c1.52-1.22 2.7-2.89 3.44-4.77C21.27 7.61 17 4.5 12 4.5c-1.52 0-2.96.3-4.28.84l1.6 1.6C10.72 6.63 11.34 6.5 12 6.5zm-1.09 7.32L12 15c-2.76 0-5-2.24-5-5 0-.78.19-1.5.51-2.14l-1.6-1.6C4.39 7.04 2.73 9.06 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.31 4.39-.87l-2.92-2.92C13.28 15.37 11.66 15.5 10 15.5c-.58 0-1.13-.08-1.66-.22l-.43.09zm10.01-3.95L20.73 12c-.74 1.88-1.92 3.55-3.44 4.77l-1.59-1.59c.23-.57.36-1.19.36-1.85 0-2.76-2.24-5-5-5-.66 0-1.28.13-1.85.36L9.08 6.59C10.34 6.03 11.81 5.58 13.5 5.58c.79 0 1.54.11 2.25.3l2.17-2.17L2.1 2.1.69 3.51l19.8 19.8 1.41-1.41-2.82-2.82zM2.92 3.58l1.59 1.59C3.22 6.19 1.95 8.11 1 10.5c1.73 4.39 6 7.5 11 7.5 1.99 0 3.84-.55 5.46-1.52l1.59 1.59L22.49 17l-1.41-1.41L2.92 3.58z"/>
+                        </svg>
+                    </button>
+                </div>
+                </div>
+            <button type="submit">登録する</button>
+        </form>
+
+        <div class="back-link">
+            <a th:href="@{/kanrilogin}">ログイン画面に戻る</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const togglePasswordButton = document.getElementById('togglePasswordButton');
+            if (passwordInput && togglePasswordButton) { // nullチェックを追加
+                const eyeIcon = togglePasswordButton.querySelector('.icon-eye');
+                const eyeSlashIcon = togglePasswordButton.querySelector('.icon-eye-slash');
+
+                if (eyeIcon && eyeSlashIcon) { // アイコンのnullチェックも追加
+                    togglePasswordButton.addEventListener('click', function() {
+                        if (passwordInput.type === 'password') {
+                            passwordInput.type = 'text';
+                            eyeIcon.style.display = 'none';
+                            eyeSlashIcon.style.display = 'inline-block';
+                        } else {
+                            passwordInput.type = 'password';
+                            eyeIcon.style.display = 'inline-block';
+                            eyeSlashIcon.style.display = 'none';
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
