@@ -6,14 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.demo.entity.KanriUser;
 
-public interface KanriUserRepository extends JpaRepository<KanriUser, Long> {
+// ★★★ ここの Long を String に変更 ★★★
+public interface KanriUserRepository extends JpaRepository<KanriUser, String> {
 
-    // ★★★ おそらく、このメソッドの定義が抜けています！ ★★★
     Optional<KanriUser> findByLoginIdAndPassword(String loginId, String password);
 
-    /**
-     * 登録時に使用するメソッド（これは元のままでOK）
-     */
     Optional<KanriUser> findByLoginIdAndStoreId(String loginId, Long storeId);
 
 }
