@@ -9,8 +9,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table; // ★★★ このimport文を追加 ★★★
 
 @Entity
+@Table(name = "products") // ★★★ この一行を追加 ★★★
 public class Product {
 
     @Id
@@ -26,7 +28,7 @@ public class Product {
     private LocalDateTime updateDate;
 
     @Column(name = "kanri_user_id")
-    private String kanriUserId; // ← このフィールド名 (キャメルケース)
+    private String kanriUserId;
 
     public String getKanriUserId() {
         return kanriUserId;
@@ -42,7 +44,7 @@ public class Product {
         this.updateDate = LocalDateTime.now();
     }
 
-    // Getter / Setter
+    // Getter / Setter は変更なし
     public Long getId() {
         return id;
     }
@@ -90,5 +92,4 @@ public class Product {
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
     }
-
 }
