@@ -37,12 +37,11 @@
     <h1>店舗を選んでください</h1>
     <form th:action="@{/nextpage}" method="post">
         <div class="store-option" th:each="store : ${stores}">
-    <input type="radio" name="storename" th:value="${store}" th:id="${store}" required />
-    <label th:for="${store}" th:text="${store}">店舗名</label>
-</div>
-
-		<button type="button" onclick="window.location.href='/userhome'">戻る</button>
-<button type="submit">次へ</button>
+            <input type="radio" name="storename" th:value="${store.storename}" th:id="${'store-' + store.id}" required />
+            <label th:for="${'store-' + store.id}" th:text="${store.storename}">店舗名</label>
+        </div>
+        <button type="button" onclick="window.location.href='/userhome'">戻る</button>
+        <button type="submit">次へ</button>
     </form>
 </body>
 </html>
