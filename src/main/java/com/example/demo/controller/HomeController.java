@@ -15,21 +15,18 @@ public class HomeController {
         this.storeRepository = storeRepository;
     }
 
-    // 変更例: HomeController
-    // HomeController.java
-    @GetMapping("/adminhome")
-    public String home() {
-        return "home";
+    @GetMapping("/") // ★★★ ルートURL用のメソッドを追加 ★★★
+    public String root() {
+        // ルートにアクセスされたら、店舗選択画面にリダイレクトする
+        return "redirect:/storeselect";
     }
 
     @GetMapping("/storeselect")
     public String storeSelect(Model model) {
-        model.addAttribute("stores", storeRepository.findAll()); //
+        model.addAttribute("stores", storeRepository.findAll());
         return "store"; // store.html を返す
     }
 
-    @GetMapping("/log")
-    public String log() {
-        return "log";
-    }
+    // 以前の /adminhome や /log へのマッピングは不要なため削除します。
+    // 必要であれば、適切なコントローラに再配置してください。
 }
