@@ -15,10 +15,10 @@ public class HomeController {
         this.storeRepository = storeRepository;
     }
 
-    @GetMapping("/") // ★★★ ルートURL用のメソッドを追加 ★★★
+    @GetMapping("/")
     public String root() {
-        // ルートにアクセスされたら、店舗選択画面にリダイレクトする
-        return "redirect:/storeselect";
+        // "home.html" を表示するように変更
+        return "home";
     }
 
     @GetMapping("/storeselect")
