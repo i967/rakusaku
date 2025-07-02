@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>処理エラー</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; text-align: center; }
+        .error-box { border: 1px solid #dc3545; padding: 25px; margin: 20px auto; max-width: 600px; border-radius: 8px; background-color: #f8d7da; color: #721c24; }
+        .home-button { padding: 10px 25px; font-size: 1rem; border: none; border-radius: 6px; background-color: #007bff; color: white; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 20px; }
+        .home-button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h2>処理エラー</h2>
+    <div class="error-box">
+        <h3 th:text="${message}">エラーメッセージ</h3>
+        <p>申し訳ありませんが、処理を完了できませんでした。カートが空か、情報が不足している可能性があります。</p>
+    </div>
+    <a th:href="@{/storeselect}" class="home-button">店舗選択に戻る</a>
+</body>
+</html>
