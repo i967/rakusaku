@@ -24,7 +24,7 @@ public class HomeController {
     @GetMapping("/storeselect")
     public String storeSelect(Model model) {
         model.addAttribute("stores", storeRepository.findAll());
-        return "store"; // store.html を返す
+        return "select"; // ← 実際に存在する "select.html" を指すように修正
     }
 
     // 以前の /adminhome や /log へのマッピングは不要なため削除します。
