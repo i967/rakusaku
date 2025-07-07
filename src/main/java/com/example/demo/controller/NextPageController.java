@@ -5,31 +5,28 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.entity.ProductList;
-import com.example.demo.repository.ProductListRepository;
+import com.example.demo.entity.ProductList; // ★★★ ProductListに変更
+import com.example.demo.repository.ProductListRepository; // ★★★ ProductListRepositoryに変更
 
 @Controller
 public class NextPageController {
 
     @Autowired
-    private ProductListRepository productListRepository;
+    private ProductListRepository productListRepository; // ★★★ ProductListRepositoryに変更
 
-    @GetMapping("/nextpage")
+    @PostMapping("/nextpage")
     public String showNextPage(
-        @RequestParam(value = "storename", required = false) String storename,
-        Model model) {
+            @RequestParam(value = "storename") String storename, // required=falseを削除
+            Model model) {
 
-        List<ProductList> goodsList;
-        if (storename != null && !storename.isEmpty()) {
-            goodsList = productListRepository.findByStoreName(storename);
-        } else {
-            goodsList = productListRepository.findAll();
-        }
-        model.addAttribute("goodsList", goodsList);
-        model.addAttribute("storename", storename);
+        List<ProductList> productList = productListRepository.findByStoreName(storename); // ★★★ findByStoreNameに変更
+        
+        model.addAttribute("productList", productList);
+        model.addAttribute("selectedStore", storename);
+        
         return "nextpage";
     }
 }
