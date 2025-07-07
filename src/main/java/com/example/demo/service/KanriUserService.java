@@ -20,6 +20,7 @@ public class KanriUserService {
      */
     @Transactional
     public boolean registerKanriUser(KanriUser user) {
+        // (このメソッドは元のままでOKですが、念のため記載)
         if (user.getStoreId() == null) {
             return false;
         }
@@ -38,8 +39,8 @@ public class KanriUserService {
      * ログイン認証（storeId不要）
      */
     public KanriUser validateUser(String loginId, String password) {
-
-        Optional<KanriUser> userOpt = kanriUserRepository.findByNameAndPassword(loginId, password);
+        // ★★★ メソッド名を findByName... から findByLoginId... に修正 ★★★
+        Optional<KanriUser> userOpt = kanriUserRepository.findByLoginIdAndPassword(loginId, password);
         return userOpt.orElse(null);
     }
 }
