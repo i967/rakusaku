@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,43 +10,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.entity.Goods;
-import com.example.demo.entity.ShopOrder;
-import com.example.demo.entity.ShopOrder.OrderStatus;
-import com.example.demo.repository.GoodsRepository;
-import com.example.demo.repository.ShopOrderRepository;
-import com.example.demo.service.QrCodeService;
+import com.example.demo.entity.ProductList;
+import com.example.demo.entity.PurchaseHistory;
+import com.example.demo.repository.ProductListRepository;
+import com.example.demo.repository.PurchaseHistoryRepository;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-
-// ★★★ PurchaseHistory関連のimportを削除 ★★★
-// import com.example.demo.entity.PurchaseHistory;
-// import com.example.demo.repository.PurchaseHistoryRepository;
 
 @Controller
 @RequestMapping("/purchase")
 public class PurchaseController {
 
     @Autowired
-    private GoodsRepository goodsRepository;
-    
-    // ★★★ PurchaseHistoryRepositoryのAutowiredを削除 ★★★
-    // @Autowired
-    // private PurchaseHistoryRepository purchaseHistoryRepository;
-    
+    private ProductListRepository productListRepository;
+
     @Autowired
-    private ShopOrderRepository shopOrderRepository;
-    @Autowired
-    private QrCodeService qrCodeService;
+    private PurchaseHistoryRepository purchaseHistoryRepository;
 
     @PostMapping("/confirm")
     public String confirmPayment(@RequestParam("paymentMethod") String paymentMethod,
-                                   @RequestParam(value = "selectedGoodsIds", required = false) List<Long> selectedGoodsIds,
-                                   HttpServletRequest request,
-                                   Model model) {
+                                 @RequestParam(value = "selectedGoodsIds", required = false) List<Long> selectedGoodsIds,
+                                 @RequestParam(value = "quantities", required = false) List<Integer> quantities,
+                                 HttpServletRequest request,
+                                 Model model) {
 
-        String userId = null; // userIdは将来的には顧客(Customer)情報に紐付けるのが望ましい
+        String userId = null;
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("user_id".equals(cookie.getName())) {
@@ -57,46 +45,39 @@ public class PurchaseController {
             }
         }
 
-        if (selectedGoodsIds != null && !selectedGoodsIds.isEmpty()) { // userIdのチェックは必須ではなくなる
-            List<Goods> selectedItems = goodsRepository.findAllById(selectedGoodsIds);
-            List<String> createdOrderNumbers = new ArrayList<>();
+        if (selectedGoodsIds != null && !selectedGoodsIds.isEmpty() && userId != null) {
 
-            for (Goods g : selectedItems) {
-                // --- ShopOrderの作成ロジックのみに ---
-                ShopOrder newOrder = new ShopOrder();
-                String orderNumber = "ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-                
-                newOrder.setOrderNumber(orderNumber);
-                newOrder.setItemName(g.getGoodsname());
-                newOrder.setPrice(g.getGoodsprice());
-                newOrder.setStatus(OrderStatus.PREPARING);
+            List<ProductList> selectedItems = productListRepository.findAllById(selectedGoodsIds);
 
-                if (g.getStoreId() != null) {
-                    newOrder.setStoreId(g.getStoreId().longValue());
-                } else {
-                    model.addAttribute("message", "商品の店舗情報が不足しており、注文を作成できません。");
-                    return "payment_result";
-                }
-                
-                shopOrderRepository.save(newOrder);
-                
-                // ★★★ PurchaseHistoryを作成する部分を削除 ★★★
-
-                createdOrderNumbers.add(orderNumber);
+            if (quantities == null || quantities.size() != selectedGoodsIds.size()) {
+                model.addAttribute("message", "数量情報が正しくありません");
+                return "payment_result";
             }
 
-            // --- QRコード生成と画面表示（変更なし） ---
-            if (!createdOrderNumbers.isEmpty()) {
-                String combinedOrderNumbers = String.join("\n", createdOrderNumbers);
-                String lineUrl = "https://line.me/R/oaMessage/@254gcwky/?" + combinedOrderNumbers;
-                String qrCodeBase64 = qrCodeService.generateQrCodeAsBase64(lineUrl);
+            int totalPrice = 0;
 
-                model.addAttribute("message", "「" + paymentMethod + "」でのお支払いが完了しました");
-                model.addAttribute("qrCode", qrCodeBase64);
-                model.addAttribute("orderNumbers", createdOrderNumbers);
+            for (int i = 0; i < selectedItems.size(); i++) {
+                ProductList g = selectedItems.get(i);
+                int quantity = quantities.get(i);
+
+                PurchaseHistory history = new PurchaseHistory();
+                history.setGoodsName(g.getGoodsname());
+                history.setGoodsPrice(g.getGoodsprice());
+                history.setUserId(userId);
+                history.setPurchaseAt(LocalDateTime.now());
+                history.setStoreId(g.getStoreId());
+                history.setStorename(g.getStoreName());
+                history.setQuantity(quantity);
+
+                purchaseHistoryRepository.save(history);
+
+                totalPrice += g.getGoodsprice() * quantity;
             }
-            
-            return "payment";
+
+            model.addAttribute("message", "「" + paymentMethod + "」でのお支払いが完了しました");
+            model.addAttribute("totalPrice", totalPrice);
+
+            return "payment_result";  // 統一してこの画面だけ使う
         } else {
             model.addAttribute("message", "お支払いに必要な情報が不足しています");
             return "payment_result";

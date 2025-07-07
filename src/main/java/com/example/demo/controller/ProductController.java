@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.demo.entity.Product;
-import com.example.demo.repository.ProductRepository;
+import com.example.demo.entity.ProductList;
+import com.example.demo.repository.ProductListRepository;
 
 import jakarta.validation.Valid;
 
@@ -23,25 +23,25 @@ import jakarta.validation.Valid;
 public class ProductController {
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductListRepository productlistRepository;
 
     // 新商品登録フォームを表示
     @GetMapping("/admin/products/add")
     public String showAddProductForm(Model model) {
-        model.addAttribute("product", new Product());
+        model.addAttribute("product", new ProductList());
         return "addProduct";
     }
 
     @GetMapping("/inventoryList")
     public String showInventoryPage(Model model) {
-        List<Product> products = productRepository.findAll();
+        List<ProductList> products = productlistRepository.findAll();
         model.addAttribute("products", products);
         return "inventoryList";
     }
 
     // フォーム送信の処理 (商品登録)
     @PostMapping("/admin/products/add")
-    public String addProduct(@Valid @ModelAttribute Product product, BindingResult bindingResult,
+    public String addProduct(@Valid @ModelAttribute ProductList product, BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             // productエンティティの stock フィールドに対するバリデーションエラーがあるか確認
@@ -49,7 +49,7 @@ public class ProductController {
             return "addProduct";
         }
 
-        productRepository.save(product);
+        productlistRepository.save(product);
         redirectAttributes.addFlashAttribute("successMessage", "商品が正常に登録されました。");
         return "redirect:/inventoryList";
     }
@@ -59,16 +59,16 @@ public class ProductController {
     public String updateProductStock(@PathVariable("id") Long id,
             @RequestParam("stock") Integer stock, // パラメータ名を "stock" に変更, 型を Integer に
             RedirectAttributes redirectAttributes) {
-        Optional<Product> productOptional = productRepository.findById(id);
+        Optional<ProductList> productOptional = productlistRepository.findById(id);
         if (productOptional.isPresent()) {
-            Product product = productOptional.get();
+            ProductList product = productOptional.get();
             // 在庫数のバリデーション (例: stock >= 0)
             if (stock == null || stock < 0) { // null チェックも追加
                 redirectAttributes.addFlashAttribute("errorMessage", "在庫数は0以上の有効な数値である必要があります。");
                 return "redirect:/inventoryList";
             }
             product.setStock(stock); // product.setStock() を使用
-            productRepository.save(product);
+            productlistRepository.save(product);
             redirectAttributes.addFlashAttribute("successMessage", "商品ID: " + id + " の在庫数が更新されました。");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "商品ID: " + id + " が見つかりませんでした。");
@@ -79,9 +79,9 @@ public class ProductController {
     // 商品削除処理
     @PostMapping("/admin/products/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        Optional<Product> productOptional = productRepository.findById(id);
+        Optional<ProductList> productOptional = productlistRepository.findById(id);
         if (productOptional.isPresent()) {
-            productRepository.deleteById(id);
+            productlistRepository.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "商品ID: " + id + " が削除されました。");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "商品ID: " + id + " が見つかりませんでした。");

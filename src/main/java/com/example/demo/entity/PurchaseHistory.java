@@ -36,9 +36,20 @@ public class PurchaseHistory {
     private long storeId;
 
     @Column(name = "delivered")
-    private boolean delivered = false;  // ★ ここを追加
+    private Boolean delivered;  // ★ ここを追加
+    
+    @Column(name = "quantity")
+    private Integer quantity; 
 
-    // ゲッター・セッター
+    public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	// ゲッター・セッター
     public Long getId() {
         return id;
     }
@@ -95,11 +106,11 @@ public class PurchaseHistory {
         this.storeId = storeId;
     }
 
-    public boolean getDelivered() { // [変更] 戻り値をbooleanに
+    public Boolean getDelivered() {
         return delivered;
     }
 
-    public void setDelivered(boolean delivered) { // [変更] 引数をbooleanに
+    public void setDelivered(Boolean delivered) {
         this.delivered = delivered;
     }
 }

@@ -85,14 +85,15 @@
 
 <form th:action="@{/purchase/confirm}" method="post">
     <div th:each="item : ${cartItems}">
-        <p th:text="${item.goodsname} + ' - ' + ${item.goodsprice} + '円'"></p>
-        <input type="hidden" name="selectedGoodsIds" th:value="${item.id}" />
+        <p th:text="${item.product.goodsname} + ' - 単価: ' + ${item.product.goodsprice} + '円 × ' + ${item.quantity} + '個 = ' + (${item.product.goodsprice} * ${item.quantity}) + '円'"></p>
+        
+        <input type="hidden" name="selectedGoodsIds" th:value="${item.product.id}" />
+        <input type="hidden" name="quantities" th:value="${item.quantity}" />
     </div>
 
-    <!-- 支払い方法は仮にLINE固定 -->
     <input type="hidden" name="paymentMethod" value="LINE" />
 
     <button type="submit">支払いに進む</button>
 </form>
-
-</body></html>
+</body>
+</html>

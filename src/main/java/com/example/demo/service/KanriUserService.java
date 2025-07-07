@@ -39,10 +39,7 @@ public class KanriUserService {
      */
     public KanriUser validateUser(String loginId, String password) {
 
-        // ▼▼▼▼▼▼▼ ここのメソッド名を修正しました！ ▼▼▼▼▼▼▼
-        Optional<KanriUser> userOpt = kanriUserRepository.findByLoginIdAndPassword(loginId, password);
-        // ▲▲▲▲▲▲▲ findByNameAndPassword から変更 ▲▲▲▲▲▲▲
-
+        Optional<KanriUser> userOpt = kanriUserRepository.findByNameAndPassword(loginId, password);
         return userOpt.orElse(null);
     }
 }

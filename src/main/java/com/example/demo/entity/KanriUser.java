@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -9,24 +11,26 @@ import jakarta.persistence.Table;
 public class KanriUser {
 
     @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY) // ← この行を削除
-    private String id; // ← LongからStringに変更
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String loginId;
+
     private String password;
+
     private String name;
-    private Long storeId; // storeIdは数値のままなので変更しない
+
+    private Long storeId;
 
     // ゲッター・セッター
-    public String getId() { // ← 戻り値の型をStringに変更
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) { // ← 引数の型をStringに変更
+    public void setId(Long id) {
         this.id = id;
     }
 
-    // 他のゲッター・セッターは省略
     public String getLoginId() {
         return loginId;
     }
