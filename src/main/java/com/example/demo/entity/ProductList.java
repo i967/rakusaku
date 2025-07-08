@@ -1,5 +1,5 @@
 package com.example.demo.entity;
-
+	
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
+	
 @Entity
 @Table(name = "product_list")
 public class ProductList {
@@ -20,7 +20,7 @@ public class ProductList {
     @Column(name = "store_id", nullable = false)
     private Long storeId;
 
-    // ### This annotation correctly maps the 'storeName' field to the 'store_name' column ###
+    // ★★★ データベースの`store_name`カラムに正しくマッピング ★★★
     @Column(name = "store_name", nullable = false)
     private String storeName;
 
@@ -39,7 +39,7 @@ public class ProductList {
     @Column(name = "kanri_user_id", nullable = false)
     private String kanriUserId;
 
-    // --- Getters & Setters ---
+    // --- 以下、ゲッター・セッター ---
 
     public Long getId() {
         return id;
@@ -57,7 +57,7 @@ public class ProductList {
         this.storeId = storeId;
     }
 
-    // ### Corrected getter and setter for the 'storeName' field ###
+    // ★★★ storeNameフィールドに対応する正しいゲッター・セッター ★★★
     public String getStoreName() {
         return storeName;
     }
@@ -92,5 +92,17 @@ public class ProductList {
 
     public LocalDateTime getUpdateDate() {
         return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getKanriUserId() {
+        return kanriUserId;
+    }
+
+    public void setKanriUserId(String kanriUserId) {
+        this.kanriUserId = kanriUserId;
     }
 }
