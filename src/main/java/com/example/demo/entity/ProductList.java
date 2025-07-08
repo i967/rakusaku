@@ -1,5 +1,5 @@
 package com.example.demo.entity;
-
+	
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
+	
 @Entity
 @Table(name = "product_list")
 public class ProductList {
@@ -20,7 +20,7 @@ public class ProductList {
     @Column(name = "store_id", nullable = false)
     private Long storeId;
 
-    // ★★★ データベースの`store_name`カラムに正しくマッピング ★★★
+    // ★★★ このアノテーションが最も重要です ★★★
     @Column(name = "store_name", nullable = false)
     private String storeName;
 
@@ -41,68 +41,28 @@ public class ProductList {
 
     // --- 以下、ゲッター・セッター ---
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getStoreId() { return storeId; }
+    public void setStoreId(Long storeId) { this.storeId = storeId; }
 
-    public Long getStoreId() {
-        return storeId;
-    }
+    // ★★★ フィールド名とメソッド名も正しくなっているか確認 ★★★
+    public String getStoreName() { return storeName; }
+    public void setStoreName(String storeName) { this.storeName = storeName; }
 
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
+    public String getGoodsname() { return goodsname; }
+    public void setGoodsname(String goodsname) { this.goodsname = goodsname; }
 
-    // ★★★ storeNameフィールドに対応する正しいゲッター・セッター ★★★
-    public String getStoreName() {
-        return storeName;
-    }
+    public Integer getGoodsprice() { return goodsprice; }
+    public void setGoodsprice(Integer goodsprice) { this.goodsprice = goodsprice; }
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
 
-    public String getGoodsname() {
-        return goodsname;
-    }
+    public LocalDateTime getUpdateDate() { return updateDate; }
+    public void setUpdateDate(LocalDateTime updateDate) { this.updateDate = updateDate; }
 
-    public void setGoodsname(String goodsname) {
-        this.goodsname = goodsname;
-    }
-
-    public Integer getGoodsprice() {
-        return goodsprice;
-    }
-
-    public void setGoodsprice(Integer goodsprice) {
-        this.goodsprice = goodsprice;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(LocalDateTime updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public String getKanriUserId() {
-        return kanriUserId;
-    }
-
-    public void setKanriUserId(String kanriUserId) {
-        this.kanriUserId = kanriUserId;
-    }
+    public String getKanriUserId() { return kanriUserId; }
+    public void setKanriUserId(String kanriUserId) { this.kanriUserId = kanriUserId; }
 }
