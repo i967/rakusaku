@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.entity.KanriUser; // ★★★ KanriUserをインポート ★★★
 import com.example.demo.entity.ProductList;
 import com.example.demo.repository.ProductListRepository;
 
+import jakarta.servlet.http.HttpSession; // ★★★ HttpSessionをインポート ★★★
 import jakarta.validation.Valid;
 
 @Controller
@@ -32,42 +34,63 @@ public class ProductController {
         return "addProduct";
     }
 
+    // 在庫一覧ページを表示 (ログイン中の管理者の商品のみ表示するように修正)
     @GetMapping("/inventoryList")
-    public String showInventoryPage(Model model) {
-        List<ProductList> products = productlistRepository.findAll();
+    public String showInventoryPage(Model model, HttpSession session) { // HttpSessionを追加
+        KanriUser adminUser = (KanriUser) session.getAttribute("adminUser");
+        if (adminUser == null) {
+            return "redirect:/kanrilogin";
+        }
+        
+        // ログイン中の管理者の店舗IDで商品を絞り込む
+        List<ProductList> products = productlistRepository.findByStoreId(adminUser.getStoreId());
+        
         model.addAttribute("products", products);
         return "inventoryList";
     }
 
-    // フォーム送信の処理 (商品登録)
+    /**
+     * 【修正版】フォーム送信の処理 (商品登録)
+     */
     @PostMapping("/admin/products/add")
-    public String addProduct(@Valid @ModelAttribute ProductList product, BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+    public String addProduct(@Valid @ModelAttribute("product") ProductList product, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            HttpSession session) { // ★★★ HttpSession を引数に追加 ★★★
+
         if (bindingResult.hasErrors()) {
-            // productエンティティの stock フィールドに対するバリデーションエラーがあるか確認
-            // 例えば、@Min(0) などを Product エンティティの stock フィールドに付与している場合
             return "addProduct";
         }
+        
+        // ★★★ ここから処理を追加 ★★★
+        // 1. セッションからログイン中の管理者情報を取得
+        KanriUser adminUser = (KanriUser) session.getAttribute("adminUser");
+        if (adminUser == null) {
+            return "redirect:/kanrilogin";
+        }
+        
+        // 2. 新しい商品情報に、管理者の店舗IDと店舗名を設定
+        product.setStoreId(adminUser.getStoreId());
+        product.setStoreName(adminUser.getName());
+        // ★★★ ここまで処理を追加 ★★★
 
         productlistRepository.save(product);
         redirectAttributes.addFlashAttribute("successMessage", "商品が正常に登録されました。");
         return "redirect:/inventoryList";
     }
 
-    // 商品の在庫数更新処理
-    @PostMapping("/admin/products/updateStock/{id}") // パスを updateStock に変更
+    // 商品の在庫数更新処理 (変更なし)
+    @PostMapping("/admin/products/updateStock/{id}")
     public String updateProductStock(@PathVariable("id") Long id,
-            @RequestParam("stock") Integer stock, // パラメータ名を "stock" に変更, 型を Integer に
+            @RequestParam("stock") Integer stock,
             RedirectAttributes redirectAttributes) {
         Optional<ProductList> productOptional = productlistRepository.findById(id);
         if (productOptional.isPresent()) {
             ProductList product = productOptional.get();
-            // 在庫数のバリデーション (例: stock >= 0)
-            if (stock == null || stock < 0) { // null チェックも追加
+            if (stock == null || stock < 0) {
                 redirectAttributes.addFlashAttribute("errorMessage", "在庫数は0以上の有効な数値である必要があります。");
                 return "redirect:/inventoryList";
             }
-            product.setStock(stock); // product.setStock() を使用
+            product.setStock(stock);
             productlistRepository.save(product);
             redirectAttributes.addFlashAttribute("successMessage", "商品ID: " + id + " の在庫数が更新されました。");
         } else {
@@ -76,7 +99,7 @@ public class ProductController {
         return "redirect:/inventoryList";
     }
 
-    // 商品削除処理
+    // 商品削除処理 (変更なし)
     @PostMapping("/admin/products/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         Optional<ProductList> productOptional = productlistRepository.findById(id);
