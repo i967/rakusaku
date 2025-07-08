@@ -10,8 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes; // Import this
-import org.springframework.web.bind.support.SessionStatus;     // Import this
+import org.springframework.web.bind.annotation.SessionAttributes; // ★★★ これをインポート ★★★
+import org.springframework.web.bind.support.SessionStatus;     // ★★★ これをインポート ★★★
 
 import com.example.demo.entity.ProductList;
 import com.example.demo.entity.ShopOrder;
@@ -20,9 +20,11 @@ import com.example.demo.repository.ProductListRepository;
 import com.example.demo.repository.ShopOrderRepository;
 import com.example.demo.service.QrCodeService;
 
+
 @Controller
 @RequestMapping("/purchase")
-// 1. Tell Spring that this controller manages a session attribute named "cartItems"
+// ★★★ このコントローラがセッションを扱うことを宣言 ★★★
+// (CartControllerで使っている属性名を指定します。例: "cartItems")
 @SessionAttributes("cartItems") 
 public class PurchaseController {
 
@@ -31,7 +33,6 @@ public class PurchaseController {
     
     @Autowired
     private ShopOrderRepository shopOrderRepository;
-    
     @Autowired
     private QrCodeService qrCodeService;
 
@@ -39,8 +40,7 @@ public class PurchaseController {
     public String confirmPayment(@RequestParam("paymentMethod") String paymentMethod,
                                    @RequestParam(value = "selectedGoodsIds", required = false) List<Long> selectedGoodsIds,
                                    Model model,
-                                   // 2. Add SessionStatus to the method parameters
-                                   SessionStatus sessionStatus) {
+                                   SessionStatus sessionStatus) { // ★★★ SessionStatusを引数に追加 ★★★
 
         if (selectedGoodsIds == null || selectedGoodsIds.isEmpty()) {
             model.addAttribute("message", "お支払いに必要な情報が不足しています");
@@ -73,7 +73,7 @@ public class PurchaseController {
             model.addAttribute("orderNumbers", createdOrderNumbers);
         }
         
-        // 3. Mark the session as complete to clear the cart
+        // ★★★ 注文処理が全て完了した後に、セッションをクリアする ★★★
         sessionStatus.setComplete();
 
         return "payment";
