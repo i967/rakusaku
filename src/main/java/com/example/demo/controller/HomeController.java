@@ -1,32 +1,37 @@
 package com.example.demo.controller;
 
+import java.util.List; // ★★★ Listのimport文を追加 ★★★
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.demo.repository.StoreRepository;
+import com.example.demo.repository.ProductListRepository; // ★★★ ProductListRepositoryに変更 ★★★
+
 @Controller
 public class HomeController {
 
-    private final StoreRepository storeRepository;
+    // ★★★ ProductListRepositoryを注入 ★★★
+    private final ProductListRepository productListRepository;
 
-    public HomeController(StoreRepository storeRepository) {
-        this.storeRepository = storeRepository;
+    @Autowired
+    public HomeController(ProductListRepository productListRepository) {
+        this.productListRepository = productListRepository;
     }
 
-    @GetMapping("/userhome")
-    public String home() {
-        return "userhome";
+    @GetMapping("/")
+    public String root() {
+        return "home";
     }
 
     @GetMapping("/storeselect")
     public String storeSelect(Model model) {
-        model.addAttribute("stores", storeRepository.findAll());
-        return "store"; // store.html を返す
-    }
-
-    @GetMapping("/log")
-    public String log() {
-        return "log";
+        // ★★★ 新しく作ったメソッドを呼び出す ★★★
+        List<String> storeNames = productListRepository.findDistinctStoreNames();
+        
+        // ★★★ モデルに "storeNames" という名前で渡す ★★★
+        model.addAttribute("storeNames", storeNames);
+        return "select"; 
     }
 }

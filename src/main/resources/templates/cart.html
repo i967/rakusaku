@@ -6,54 +6,49 @@
     <meta charset="UTF-8">
     <title>カートの中身</title>
     <style>
-                body {
+        body {
             font-family: 'Helvetica Neue', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
             color: #333;
         }
-
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         h2 {
             text-align: center;
             color: #007bff;
             margin-bottom: 30px;
         }
-
         table {
-            width: 80%;
-            margin: 0 auto 20px auto;
+            width: 100%;
+            margin-bottom: 20px;
             border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         th, td {
             padding: 15px;
             border-bottom: 1px solid #ddd;
             text-align: center;
         }
-
         th {
             background-color: #007bff;
             color: white;
         }
-
-        td {
-            font-size: 16px;
-        }
-
-        p {
+        .empty-cart {
             text-align: center;
-            color: #dc3545;
-            font-weight: bold;
+            color: #555;
+            font-size: 1.1rem;
+            padding: 2rem;
         }
-
         form {
             text-align: center;
-            margin-top: 20px;
         }
-
         button {
             background-color: #28a745;
             color: white;
@@ -64,36 +59,50 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         button:hover {
             background-color: #218838;
         }
-
         .back-button {
-            background-color: #dc3545;
-            margin-top: 20px;
+            background-color: #6c757d;
+            margin-right: 15px;
         }
-
         .back-button:hover {
-            background-color: #c82333;
+            background-color: #5a6268;
         }
     </style>
 </head>
 <body>
 
-<h2>カート内容</h2>
+<div class="container">
+    <h2>カート内容</h2>
 
-<form th:action="@{/purchase/confirm}" method="post">
-    <div th:each="item : ${cartItems}">
-        <p th:text="${item.product.goodsname} + ' - 単価: ' + ${item.product.goodsprice} + '円 × ' + ${item.quantity} + '個 = ' + (${item.product.goodsprice} * ${item.quantity}) + '円'"></p>
-        
-        <input type="hidden" name="selectedGoodsIds" th:value="${item.product.id}" />
-        <input type="hidden" name="quantities" th:value="${item.quantity}" />
+    <div th:if="${#lists.isEmpty(cartItems)}" class="empty-cart">
+        <p>カートに商品がありません。</p>
     </div>
 
-    <input type="hidden" name="paymentMethod" value="LINE" />
+    <form th:if="${not #lists.isEmpty(cartItems)}" th:action="@{/purchase/confirm}" method="post">
+        <table>
+            <thead>
+                <tr>
+                    <th>商品名</th>
+                    <th>価格</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.goodsname}">商品名</td>
+                    <td th:text="${item.goodsprice} + '円'">価格</td>
+                    <input type="hidden" name="selectedGoodsIds" th:value="${item.id}" />
+                </tr>
+                </tbody>
+        </table>
 
-    <button type="submit">支払いに進む</button>
-</form>
+        <input type="hidden" name="paymentMethod" value="LINE" />
+
+        <button type="button" class="back-button" onclick="history.back()">戻る</button>
+        <button type="submit">支払いに進む</button>
+    </form>
+</div>
+
 </body>
 </html>

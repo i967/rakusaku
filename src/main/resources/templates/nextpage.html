@@ -4,7 +4,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>選択商品確認</title>
+    <title>商品選択</title>
     <style>
         body {
             font-family: 'Helvetica Neue', sans-serif;
@@ -57,61 +57,55 @@
             transition: background-color 0.3s ease;
         }
 
-        .button-container button:first-child {
-            background-color: #dc3545;
+        .button-container .back-button {
+            background-color: #6c757d;
             color: white;
         }
 
-        .button-container button:first-child:hover {
-            background-color: #c82333;
+        .button-container .back-button:hover {
+            background-color: #5a6268;
         }
 
-        .button-container button:last-child {
+        .button-container .submit-button {
             background-color: #28a745;
             color: white;
         }
 
-        .button-container button:last-child:hover {
+        .button-container .submit-button:hover {
             background-color: #218838;
         }
     </style>
 </head>
 <body>
 
-    <h2 th:text="'選択された店舗：' + ${storename}">選択された店舗：○○店</h2>
-    <p>以下の商品が確認できます。数量を入力し「カートに追加」を押してください。</p>
+    <h2 th:text="'選択された店舗：' + ${selectedStore}">選択された店舗：○○店</h2>
+    <p>以下の商品が確認できます。チェックして「カートに追加」を押してください。</p>
 
     <form method="post" action="/cart" onsubmit="return validateSelection()">
-    <input type="hidden" name="storename" th:value="${storename}">
-    <table>
-        <thead>
-            <tr>
-                <th>選択</th>
-                <th>商品名</th>
-                <th>価格</th>
-                <th>数量</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="goods : ${goodsList}">
-                <td>
-                    <input type="checkbox" name="selectedGoodsIds" th:value="${goods.id}">
-                </td>
-                <td th:text="${goods.goodsname}">商品名</td>
-                <td th:text="${goods.goodsprice} + ' 円'">価格</td>
-                <td>
-                    <input type="number" min="1" max="99" value="1"
-                           th:name="'quantity_' + ${goods.id}">
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>選択</th>
+                    <th>商品名</th>
+                    <th>価格</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${productList}">
+                    <td>
+                        <input type="checkbox" name="selectedGoodsIds" th:value="${product.id}">
+                    </td>
+                    <td th:text="${product.goodsname}">商品名</td>
+                    <td th:text="${product.goodsprice} + ' 円'">価格</td>
+                </tr>
+                </tbody>
+        </table>
 
-    <div class="button-container">
-        <button type="button" onclick="window.location.href='/select'">戻る</button>
-        <button type="submit">カートに追加</button>
-    </div>
-</form>
+        <div class="button-container">
+            <button type="button" class="back-button" onclick="window.location.href='/storeselect'">戻る</button>
+            <button type="submit" class="submit-button">カートに追加</button>
+        </div>
+    </form>
     <script>
         function validateSelection() {
             const selected = document.querySelectorAll('input[name="selectedGoodsIds"]:checked');

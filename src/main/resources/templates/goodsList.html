@@ -4,17 +4,21 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>商品一覧</title>
+    <title>商品・購入履歴</title>
     <style>
-        body {	
+        body {    
             font-family: sans-serif;
             padding: 40px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
         }
         h1, h2 {
             text-align: center;
         }
         table {
-            width: 80%;
+            width: 100%;
             margin: 20px auto;
             border-collapse: collapse;
         }
@@ -26,45 +30,39 @@
         th {
             background-color: #f0f0f0;
         }
-        .description {
-            width: 40%;
-        }
         .price {
             text-align: right;
+        }
+        .empty-message {
+            text-align: center;
+            padding: 1rem;
+            color: #555;
         }
     </style>
 </head>
 <body>
-    <h1>商品一覧</h1>
-
-    <div th:if="${#lists.isEmpty(goodsList)}">
-        <p>現在販売中の商品はありません。</p>
+<div class="container">
+    
+    <h2>あなたの購入履歴</h2>
+    <div th:if="${#lists.isEmpty(historyList)}" class="empty-message">
+        <p>購入履歴はまだありません。</p>
     </div>
-    <table th:if="${!#lists.isEmpty(goodsList)}">
+    <table th:if="${!#lists.isEmpty(historyList)}">
         <thead>
             <tr>
                 <th>商品名</th>
-                <th class="description">説明</th>
                 <th>価格</th>
-                <th>在庫</th>
+                <th>購入日時</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="product : ${goodsList}">
-                <td th:text="${product.name}">商品A</td>
-                <td th:text="${product.description}">商品の説明です。</td>
-                <td class="price" th:text="|${product.price}円|">1,000円</td>
-                <td th:text="${product.stock > 0 ? '在庫あり' : '売り切れ'}">在庫あり</td>
+            <tr th:each="item : ${historyList}">
+                <td th:text="${item.goodsName}">商品名</td>
+                <td class="price" th:text="|${item.goodsPrice}円|">価格</td>
+                <td th:text="${#temporals.format(item.purchaseAt, 'yyyy/MM/dd HH:mm')}">購入日時</td>
             </tr>
         </tbody>
     </table>
-    <h2>購入履歴</h2>
-    <div th:if="${#lists.isEmpty(historyList)}">
-        <p>購入履歴はまだありません。</p>
-    </div>
-    <ul th:if="${!#lists.isEmpty(historyList)}">
-        <li th:each="item : ${historyList}" th:text="|${item.goodsName} - ${item.goodsPrice}円|"></li>
-    </ul>
-
+</div>
 </body>
 </html>

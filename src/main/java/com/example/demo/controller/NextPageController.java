@@ -21,7 +21,7 @@ public class NextPageController {
     public String showNextPage(
             @RequestParam(value = "storename") String storename, // required=falseを削除
             Model model) {
-
+    
         List<ProductList> productList = productListRepository.findByStoreName(storename); // ★★★ findByStoreNameに変更
         
         model.addAttribute("productList", productList);
