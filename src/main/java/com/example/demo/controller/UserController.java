@@ -8,7 +8,7 @@ public class UserController {
 
     @GetMapping("/userhome")
     public String showUserHomePage() {
-        // ログインチェックはせず、単純にuserhome.htmlを返します
+        // userhome.html を表示します
         return "userhome";
     }
 }
