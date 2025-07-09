@@ -72,27 +72,37 @@
 <body>
   <div class="container">
     <h1>新規商品登録</h1>
-    <form action="/register" method="post" th:action="@{/admin/products/add}" th:object="${product}">
-      <label for="name">商品名</label>
-      <input type="text" id="name" name="name" required>
+    <form action="/register" method="post" th:action="@{/admin/products/add}" th:object="${productList}">
+        <label for="goodsname">商品名</label> <input type="text" id="goodsname" name="goodsname" required th:field="*{goodsname}">
 
-      <label for="price">価格（円）</label>
-      <input type="number" id="price" name="price" required>
+        <label for="price">価格（円）</label>
+        <input type="number" id="price" name="goodsprice" required th:field="*{goodsprice}">
 
-      <label for="stock">在庫数</label>
-      <input type="number" id="stock" name="stock" required>
-
-      <label for="description">商品説明</label>
-      <textarea id="description" name="description" rows="4"></textarea>
-
-      <button type="submit">登録する</button>
+        <label for="stock">在庫数</label>
+        <input type="number" id="stock" name="stock" required th:field="*{stock}">
+        
+        <button type="submit">登録する</button>
     </form>
     
-    
-    <div class="back-link">
-        <a href="/kanrihome">管理者メニューに戻る</a>
-    </div>
-  </div>
+<tbody>
+        <tr th:each="product : ${products}" th:unless="${#lists.isEmpty(products)}">
+            <td th:text="${product.goodsname}">商品名</td>
+            <td>
+                <form th:action="@{/admin/products/updateStock/{id}(id=${product.id})}" method="post">
+                    <input type="number" name="stock" th:value="${product.stock}" min="0" required />
+                    <button type="submit" class="update-button">個数編集</button>
+                </form>
+            </td>
+            <td th:text="${product.updateDate != null ? #temporals.format(product.updateDate, 'yyyy-MM-dd HH:mm') : '-'}">更新日</td>
+            <td>
+                <form th:action="@{/admin/products/delete/{id}(id=${product.id})}"
+                      method="post"
+                      th:onsubmit="'return confirm(\'本当にこの商品「' + #strings.escapeJavaScript(${product.goodsname}) + '」を削除しますか？\');'">
+                    <button type="submit" class="delete-button">削除</button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
 </body>
 
 </html>

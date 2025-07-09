@@ -9,12 +9,10 @@
             margin: 2em;
             background-color: #f9f9f9;
         }
-
         h1 {
             text-align: center;
             color: #333;
         }
-
         .message-area {
             width: 80%;
             margin: 1em auto;
@@ -31,51 +29,25 @@
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
-
-        /* .controls スタイルは新規登録ボタン専用だったので、関連するなら削除しても良いですが、
-           他の用途で使う可能性も考慮し、ここでは残しておきます。
-           もし不要であれば、このコメントアウト部分と下の table の直前の div.controls を削除してください。
-        .controls {
-            width: 80%;
-            margin: 1em auto;
-            text-align: right;
-        }
-
-        .controls a {
-            text-decoration: none;
-            padding: 8px 15px;
-            background-color: #5cb85c;
-            color: white;
-            border-radius: 4px;
-        }
-        .controls a:hover {
-            background-color: #4cae4c;
-        }
-        */
-
         table {
             width: 80%;
-            margin: 1em auto; /* 新規登録リンクがなくなったので、テーブルの上のマージンを調整 */
+            margin: 1em auto;
             border-collapse: collapse;
             background-color: white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         th, td {
             padding: 12px 16px;
             border: 1px solid #ddd;
             text-align: center;
         }
-
         th {
             background-color: #4CAF50;
             color: white;
         }
-
         tr:hover {
             background-color: #f1f1f1;
         }
-
         td form {
             display: inline-block;
             margin: 0 5px;
@@ -106,7 +78,6 @@
         td .delete-button:hover {
             background-color: #c9302c;
         }
-
         .back-link {
             display: block;
             text-align: center;
@@ -134,7 +105,7 @@
                 <td colspan="4" style="text-align: center;">在庫情報はありません。</td>
             </tr>
             <tr th:each="product : ${products}" th:unless="${#lists.isEmpty(products)}">
-                <td th:text="${product.name}">商品名</td>
+                <td th:text="${product.goodsname}">商品名</td>
                 <td>
                     <form th:action="@{/admin/products/updateStock/{id}(id=${product.id})}" method="post">
                         <input type="number" name="stock" th:value="${product.stock}" min="0" required />
@@ -143,14 +114,14 @@
                 </td>
                 <td th:text="${product.updateDate != null ? #temporals.format(product.updateDate, 'yyyy-MM-dd HH:mm') : '-'}">更新日</td>
                 <td>
-                    <form th:action="@{/admin/products/delete/{id}(id=${product.id})}"
+                     <form th:action="@{/admin/products/delete/{id}(id=${product.id})}"
                           method="post"
-                          th:onsubmit="'return confirm(\'本当にこの商品「' + #strings.escapeJavaScript(${product.name}) + '」を削除しますか？\');'">
+                          th:onsubmit="'return confirm(\'本当にこの商品「' + #strings.escapeJavaScript(${product.goodsname}) + '」を削除しますか？\');'">
                         <button type="submit" class="delete-button">削除</button>
                     </form>
                 </td>
             </tr>
-        </tbody>
+            </tbody>
     </table>
 
     <div class="back-link">

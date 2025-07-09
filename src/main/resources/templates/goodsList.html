@@ -4,7 +4,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>商品・購入履歴</title>
+    <title>購入履歴</title>
     <style>
         body {    
             font-family: sans-serif;
@@ -38,16 +38,22 @@
             padding: 1rem;
             color: #555;
         }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+        }
     </style>
 </head>
 <body>
 <div class="container">
+    <h1>購入履歴</h1>
     
     <h2>あなたの購入履歴</h2>
     <div th:if="${#lists.isEmpty(historyList)}" class="empty-message">
         <p>購入履歴はまだありません。</p>
     </div>
-    <table th:if="${!#lists.isEmpty(historyList)}">
+    <table th:if="${not #lists.isEmpty(historyList)}">
         <thead>
             <tr>
                 <th>商品名</th>
@@ -63,6 +69,10 @@
             </tr>
         </tbody>
     </table>
+
+    <div class="back-link">
+        <a th:href="@{/userhome}">ホームに戻る</a>
+    </div>
 </div>
 </body>
 </html>
